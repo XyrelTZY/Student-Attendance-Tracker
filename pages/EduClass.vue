@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Status Not Done -->
-    <p>This is Class Management</p>
+    <p>This is Class Management Sample</p>
   </div>
 </template>
 
