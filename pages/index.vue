@@ -6,18 +6,22 @@
     <div class="min-w-100 grid lg:grid-cols-4 md:grid-cols-2 gap-8 mt-10 items-center min-h-26">
         <div v-for="(card, index) in cards" :key="index" class="grid-cols-4 bg-white md:h-auto shadow-xl px-1 py-[0.40rem]">
             <div class="flex flex-row gap-5 text-center">
-                <p class="py-5 text-sm px-3" :class="[
+                <p class="py-5 text-sm px-3 rounded-sm" :class="[
                   index === 0 ? 'bg-indigo-400' :
                   index === 1 ? 'bg-cyan-300' :
                   index === 2 ? 'bg-emerald-300' :
                   'bg-[#f5365c]'
-                ]">Icon Here</p>
+                ]">{{ card.icon }}</p>
                 <div class="mx-3 my-2">
                     <p class="text-md">{{ card.title }}</p>
                     <p>{{ card.label }}</p>
                 </div>
             </div>
         </div>
+    </div>
+    <!--  -->
+    <div>
+
     </div>
 </div>
 </template>
