@@ -1,6 +1,7 @@
 <template>
   <div>
-    <p>Hello</p>
+    <!-- Status Not Done -->
+    <p>Dashboard Content Here</p>
   </div>
 </template>
 

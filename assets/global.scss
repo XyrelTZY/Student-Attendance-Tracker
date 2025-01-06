@@ -1,0 +1,23 @@
+$m: 0;
+$p: 0;
+$bx: border-box;
+$theme1: #f5365c;
+$theme2: #e9ecef;
+// Sidebar Color;
+$theme3: #E0EAF3;
+$theme4: #CFDEF3;
+$theme5: #f7fafc;
+
+*{
+    margin: $m;
+    padding: $p;
+    box-sizing: $bx;
+}
+body{
+    background: linear-gradient(
+        to bottom,
+        $theme1 50%,
+        $theme2 50%
+      );
+    min-height: 100%;
+}
