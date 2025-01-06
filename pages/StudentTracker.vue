@@ -1,7 +1,8 @@
 <template>
   <div>
-    <!-- Status not Done -->
-     <p>This is Student Attendance</p>
+    <div class="w-full bg-white h-16 shadow-lg">
+        <h2 class="text-2xl px-4 py-4 text-center lg:float-start md:float-start sm:float-start">Attendance Management</h2>
+    </div>
   </div>
 </template>
 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 $m: 0;
 $p: 0;
 $bx: border-box;
@@ -14,10 +16,11 @@ $theme5: #f7fafc;
     box-sizing: $bx;
 }
 body{
+    font-family: 'Roboto', sans-serif;
     background: linear-gradient(
         to bottom,
-        $theme1 50%,
-        $theme2 50%
+        $theme1 10%,
+        $theme2 10%
       );
     min-height: 100%;
 }

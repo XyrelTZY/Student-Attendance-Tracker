@@ -1,8 +1,13 @@
 <template>
 <div class="flex">
     <!-- Sidebar -->
-    <div class="sidebar-container w-14 h-screen shad">
-        <div class="mb-16">
+    <div class="sidebar-container w-16 h-screen">
+        <div class="my-2 lg:mx-[0.25rem] mx-3">
+            <img 
+                src="../assets/images/SchoolLogo.png" 
+                alt="ZSNHS School Logo"
+                class="w-14"
+            >
         </div>
         <ul class="flex flex-col gap-2 mt-4 text-center">
             <li v-for="link in links" :key="link.to" :class="[ 
@@ -12,11 +17,11 @@
                  * @Status_Decided
                  * ? 'bg-indigo-300 text-white border-l-8 rounded-r-lg border-blue-500' 
                  */
-                ? 'border-r-8 rounded-r-lg border-blue-500'
-                : 'hover:bg-indigo-300 rounded-r-lg hover:text-white'
+                ? 'border-l-8 ml-[0.05rem] rounded-l-sm border-[#f5365c]' 
+                : 'hover:bg-[#CFDEF3]' 
             ]">
                 <!-- SVG Icon -->
-                <span class="text-4xl mr-3" v-html="link.icon" @click="setActive(link.to)"></span>
+                <span class="text-4xl mr-3" v-html="link.icon" @click="setActive(link.to)" />
             </li>
         </ul>
     </div>
@@ -29,9 +34,11 @@
 </template>
 
 <script lang="ts" setup>
+import logo from '../assets/images/SchoolLogo.png';
+
 const activeLink = useActiveLink(); //State Management 
 const router = useRouter(); //Router Navigation
-const route = useRoute();
+const route = useRoute(); //To Find Routes Path
 
 const links = [{
         /**
@@ -101,6 +108,7 @@ const links = [{
             </svg>
           `,
     },
+  ];
 
     /**
      * @Optional_Features
@@ -119,7 +127,6 @@ const links = [{
      * FAQs
      * Contact Support
      */
-];
 
 /**
  * Sets the active link and navigates to the specified route.
@@ -141,7 +148,6 @@ const setActive = async (to: string): Promise < string > => {
 
 let interval: any;
 
-
 /**
  * Watches for changes to the current route path and logs the updated path.
  *
@@ -149,19 +155,18 @@ let interval: any;
  * @param {(newPath: string) => void} callback - A callback function that executes when the route path changes.
  */
 
-let Dashboard : any = null;
+let Dashboard: any = null;
 watch(
     () => route.path,
     async (newPath: string) => {
-      if(newPath === Dashboard) return;
+        if (newPath === Dashboard) return;
         console.log("Navigated To:", newPath);
-        
-      if(newPath === "/")
-      {
-      console.log("Dashboard");
-      }
 
-      Dashboard = newPath;
+        if (newPath === "/") {
+            console.log("Dashboard");
+        }
+
+        Dashboard = newPath;
     },
 );
 
@@ -204,6 +209,6 @@ onUnmounted(() => {
 @import '../assets/global.scss';
 
 .sidebar-container {
-  background: $theme5;
+    background: $theme5;
 }
 </style>
