@@ -1,7 +1,7 @@
 <template>
 <div class="grid grid-flow-dense grid-cols-1">
     <div class="w-full bg-white h-16 shadow-lg">
-        <h2 class="text-2xl px-4 py-4 text-center lg:float-start md:float-start">Dashboard</h2>
+        <h2 class="text-xl sm:text-2xl px-4 py-4 text-center lg:float-start break-words whitespace-normal">Dashboard</h2>
     </div>
     <div class="min-w-100 grid lg:grid-cols-4 md:grid-cols-2 gap-8 mt-10 items-center min-h-26">
         <div v-for="(card, index) in cards" :key="index" class="grid-cols-4 bg-white md:h-auto shadow-xl px-1 py-[0.40rem]">
