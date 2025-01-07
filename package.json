@@ -10,6 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@mdi/js": "^7.4.47",
+    "@nuxt/ui": "2.20.0",
+    "@nuxtjs/icon": "3.0.0-beta.16",
     "nuxt": "^3.15.1",
     "sass": "^1.83.1",
     "vue": "latest",
@@ -17,6 +21,9 @@
   },
   "packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387",
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.12.2"
+    "@iconify-json/material-symbols": "^1.2.12",
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "vite-plugin-vuetify": "^2.0.4",
+    "vuetify": "^3.7.6"
   }
 }
