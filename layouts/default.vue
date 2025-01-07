@@ -34,8 +34,6 @@
 </template>
 
 <script lang="ts" setup>
-import logo from '../assets/images/SchoolLogo.png';
-
 const activeLink = useActiveLink(); //State Management 
 const router = useRouter(); //Router Navigation
 const route = useRoute(); //To Find Routes Path
@@ -181,7 +179,7 @@ onMounted(() => {
         interval = null;
         console.log("Current Path:", route.path);
 
-    }, 50000);
+    }, 1000);
 
     if (lastPath) {
         router.push(lastPath);
