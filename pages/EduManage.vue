@@ -15,7 +15,7 @@
                     </button>
                     <!-- Search Bar -->
                     <div class="mb-4 relative">
-                        <input v-model="searchQuery" type="text" placeholder="Search..." class="w-auto sm:w-auto p-2 pl-10 pr-2 border border-gray-300 bg-white rounded border-none" />
+                        <input v-model="searchQuery" type="text" placeholder="Search..." class="w-auto sm:w-auto p-2 pl-10 pr-2 border border-gray-300 bg-white rounded border-none shadow-lg" />
                         <!-- Magnifying Glass Icon -->
                         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="2">
                             <circle cx="11" cy="11" r="8"></circle>
