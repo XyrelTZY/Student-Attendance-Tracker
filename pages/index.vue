@@ -22,8 +22,9 @@
     </div>
 
     <!-- Attendance Table -->
-    <div class="lg:grid md:grid lg:grid-cols-1 grid-cols-2 gap-8 mt-4 lg:mt-1 grid-rows-2">
+    <div class="lg:grid md:grid md:grid-cols-1 lg:grid-cols-1 grid-cols-2 gap-8 mt-4 lg:mt-1 grid-rows-2 hidden">
         <div class="overflow-x-auto">
+            <h1 class="bg-white mb-2 py-2 px-2 shadow-lg">Overview</h1>
             <table class="min-w-full table-auto">
                 <thead>
                     <tr class="bg-[#f5365c]">
@@ -34,9 +35,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="(attendance, index) in attendanceData" :key="index">
-                        <td class="border px-4 py-2">{{ attendance.name }}</td>
-                        <td class="border px-4 py-2">{{ attendance.date }}</td>
-                        <td class="border px-4 py-2">{{ attendance.status }}</td>
+                        <td class="border px-4 py-2 text-center">{{ attendance.name }}</td>
+                        <td class="border px-4 py-2 text-center">{{ attendance.date }}</td>
+                        <td class="border px-4 py-2 text-center">{{ attendance.status }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -46,30 +47,25 @@
 </template>
 
 <script lang="ts" setup>
-// Cards data
 const cards = [{
         label: 132,
         icon: "Icon 1",
         title: "Total Students",
-        absent: "Absent"
     },
     {
         label: 120,
         icon: "Icon 2",
         title: "Total Absent",
-        absent: "Present"
     },
     {
         label: 112,
         icon: "Icon 3",
-        title: "Recent Activity",
-        absent: "Absent"
+        title: "Absent Today",
     },
     {
         label: 132,
         icon: "Icon 4",
-        title: "Notifications",
-        absent: "Present"
+        title: "Present Today",
     }
 ];
 

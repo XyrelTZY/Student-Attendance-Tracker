@@ -74,7 +74,7 @@
         </div>
     
         <!-- Modal Section for Bulk Attendance -->
-        <div v-if="isBulkModalOpen" class="fixed inset-0 bg-transparent bg-opacity-50 flex justify-center items-center">
+        <div v-if="isBulkModalOpen" class="fixed backdrop-blur-sm inset-0 bg-transparent bg-opacity-50 flex justify-center items-center">
             <div class="bg-gray-100 p-6 rounded shadow-lg w-full sm:w-[50%] lg:w-[30%]">
                 <h3 class="text-lg font-semibold mb-4">Add Attendance</h3>
                 <div v-for="(row, index) in bulkRows" :key="index" class="mb-4">
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div class="mt-4 flex justify-end">
-                    <button class="bg-red-600 text-white py-2 px-4 transition-all duration-300 ease-in-out" @click="closeBulkModal">
+                    <button class="bg-[#f5365c] text-white py-2 px-4 transition-all duration-300 ease-in-out" @click="closeBulkModal">
                         Cancel
                     </button>
                     <button class="bg-green-600 text-white py-2 px-4 transition-all duration-300 ease-in-out ml-2" @click="addBulkAttendance">
@@ -116,7 +116,7 @@
         </div>
     
         <!-- Modal Section for Single View -->
-        <div v-if="isModalOpen" class="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div v-if="isModalOpen" class="fixed backdrop-blur-sm inset-0 bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[50%] lg:w-[30%] max-w-lg">
                 <h3 class="text-2xl font-semibold mb-4 text-gray-800">Attendance Details</h3>
                 <div class="space-y-4">
@@ -130,7 +130,7 @@
                     <p class="text-gray-600"><strong class="font-medium">Date:</strong> {{ modalData?.date }}</p>
                 </div>
                 <div class="mt-6 flex justify-end">
-                    <button class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition duration-300" @click="closeModal">
+                    <button class="bg-[#f5365c] text-white py-2 px-6 transition duration-300" @click="closeModal">
                         Close
                     </button>
                 </div>
