@@ -1,68 +1,101 @@
 <template>
 <div class="grid grid-flow-dense grid-cols-1">
+    <!-- Dashboard Header -->
     <div class="w-full bg-white h-16 shadow-lg">
         <h2 class="text-xl sm:text-2xl px-4 py-4 text-center lg:float-start break-words whitespace-normal md:float-start">Dashboard</h2>
     </div>
+
+    <!-- Cards Section -->
     <div class="min-w-100 grid lg:grid-cols-4 md:grid-cols-2 grid-rows-1 gap-8 mt-10 items-center min-h-24">
         <div v-for="(card, index) in cards" :key="index" class="grid-cols-4 md:h-auto shadow-xl px-1 bg-[#f7fafc] py-[0.40rem]">
             <div class="flex flex-row gap-5 text-center sm:flex-col md:gap-4">
-                <p class="py-5 text-sm px-3 rounded-sm" :class="[
-                  index === 0 ? 'bg-[#e9ecef]' :
-                  index === 1 ? 'bg-[#e9ecef]' :
-                  index === 2 ? 'bg-[#e9ecef]' :
-                  'bg-[#e9ecef]'
-                ]">{{ card.icon }}</p>
+                <p class="py-5 text-sm px-3 rounded-sm" :class="[index === 0 ? 'bg-[#e9ecef]' :
+                                                                index === 1 ? 'bg-[#e9ecef]' :
+                                                                index === 2 ? 'bg-[#e9ecef]' : 
+                                                                'bg-[#e9ecef]' ]">{{ card.icon }}</p>
                 <div class="mx-3 my-2">
                     <p class="text-md">{{ card.title }}</p>
                     <p>{{ card.label }}</p>
                 </div>
             </div>
-            
         </div>
     </div>
-    <!-- Chart and Notification h-[25.3rem] -->
-     <!-- Need to Fix && Remove the Notification and Chart in Mobile Views -->
-    <div class="lg:grid md:grid lg:grid-cols-2 grid-cols-2 gap-8 mt-4 lg:mt-1 grid-rows-2 hidden">
-            <div class="w-auto bg-[#f7fafc] h-96">
-                Charts
-            </div>
-            <div class="w-auto bg-[#f7fafc] h-96">
-                Reports
+
+    <!-- Attendance Table -->
+    <div class="lg:grid md:grid lg:grid-cols-1 grid-cols-2 gap-8 mt-4 lg:mt-1 grid-rows-2">
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr class="bg-[#f5365c]">
+                        <th class="px-4 py-2 text-center">Student Name</th>
+                        <th class="px-4 py-2 text-center">Date</th>
+                        <th class="px-4 py-2 text-center">Attendance Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(attendance, index) in attendanceData" :key="index">
+                        <td class="border px-4 py-2">{{ attendance.name }}</td>
+                        <td class="border px-4 py-2">{{ attendance.date }}</td>
+                        <td class="border px-4 py-2">{{ attendance.status }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 </template>
 
 <script lang="ts" setup>
+// Cards data
 const cards = [{
-        label: < number > 132,
-        icon: < string | number > "Icon 1",
-        title: < string > "Total Students",
-        absent: "Absent",
-        // background: "~/assets/pages/users.svg"
+        label: 132,
+        icon: "Icon 1",
+        title: "Total Students",
+        absent: "Absent"
     },
     {
-        label: < number > 120,
-        icon: < string | number > "Icon 2",
-        title: < string > "Total Absent",
-        absent: "Present",
+        label: 120,
+        icon: "Icon 2",
+        title: "Total Absent",
+        absent: "Present"
+    },
+    {
+        label: 112,
+        icon: "Icon 3",
+        title: "Recent Activity",
+        absent: "Absent"
+    },
+    {
+        label: 132,
+        icon: "Icon 4",
+        title: "Notifications",
+        absent: "Present"
+    }
+];
 
+// Attendance data
+const attendanceData = [{
+        name: "John Doe",
+        date: "2025-01-09",
+        status: "Present"
     },
     {
-        label: < number > 112,
-        icon: < string | number > "Icon 3",
-        title: < string > "Recent Activity",
-        absent: "Absent",
+        name: "Jane Smith",
+        date: "2025-01-09",
+        status: "Absent"
     },
     {
-        label: < number > 132,
-        icon: < string | number > "Icon 4",
-        title: < string > "Notifications",
-        absent: "Present",
+        name: "Alice Johnson",
+        date: "2025-01-09",
+        status: "Present"
+    },
+    {
+        name: "Bob Brown",
+        date: "2025-01-09",
+        status: "Absent"
     }
 ];
 </script>
 
 <style lang="scss">
-
 </style>
