@@ -67,11 +67,11 @@
     
                 <!-- Pagination -->
                 <div class="flex justify-end gap-2 items-center mt-4">
-                    <button :disabled="currentPage === 1" @click="prevPage" class="p-2 bg-[#f5365c] text-white rounded disabled:opacity-50">
+                    <button :disabled="currentPage === 1" @click="prevPage" class="p-2 bg-[#f5365c] text-white disabled:opacity-50">
                         Previous
                     </button>
                     <span>Page {{ currentPage }} / {{ totalPages }}</span>
-                    <button :disabled="currentPage === totalPages" @click="nextPage" class="p-2 bg-[#f5365c] text-white rounded disabled:opacity-50 px-5">
+                    <button :disabled="currentPage === totalPages" @click="nextPage" class="p-2 bg-[#f5365c] text-white disabled:opacity-50 px-5">
                         Next
                     </button>
                 </div>
