@@ -17,7 +17,7 @@
             </svg>
         </div>
         <!-- Bulk Add Button -->
-        <button @click="openBulkModal" class="bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c]">
+        <button @click="openBulkModal" class="bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c] -mr-4">
             Add Attendance
         </button>
     </div>
