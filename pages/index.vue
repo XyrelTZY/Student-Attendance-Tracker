@@ -22,7 +22,7 @@
     </div>
     <!-- Chart and Notification h-[25.3rem] -->
      <!-- Need to Fix && Remove the Notification and Chart in Mobile Views -->
-    <div class="lg:grid md:grid md:grid-cols-1 lg:grid-cols-2 grid-cols-2 gap-8 mt-4 lg:mt-1 grid-rows-2 hidden">
+    <div class="lg:grid md:grid lg:grid-cols-2 grid-cols-2 gap-8 mt-4 lg:mt-1 grid-rows-2 hidden">
             <div class="w-auto bg-[#f7fafc] h-96">
                 Charts
             </div>
