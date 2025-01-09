@@ -1,218 +1,284 @@
 <template>
-    <div class="grid grid-rows-1 w-auto">
-        <!-- Header Section -->
-        <div class="w-auto bg-white min-h-18 shadow-lg h-16 flex items-center justify-between px-4">
-            <h2 class="text-xl px-4 py-4 text-center lg:float-start md:float-start sm:text-center break-words whitespace-normal">
-                Attendance Management
-            </h2>
+    <div class="min-h-screen">
+      <!-- Header Section -->
+      <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 ">
+          <h1 class="text-3xl">Attendance Management</h1>
         </div>
-    
-        <!-- Search Bar Section --> 
-        <div class="flex flex-wrap justify-between items-center mt-2 px-4 mb-2 flex-row">
-            <div class="relative w-full sm:w-3/4 sm:-ml-4 mb-2 sm:mb-0">
-                <input type="text" placeholder="Search Here" class="bg-gray-100 py-2 px-10 shadow-lg outline-none" v-model="search" />
-                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </div>
-    
-            <!-- Bulk Add Button -->
-            <button @click="openBulkModal" class="bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c] sm:mt-0 sm:ml-4 flex justify-center items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14m7-7H5"></path>
-                </svg>
-            </button>
+      </header>
+  
+      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Search and Bulk Add Section -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+          <div class="relative w-full sm:w-96">
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Search..."
+              class="w-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 border-none bg-white focus:ring-[#f5365c] focus:border-transparent shadow-lg"
+            />
+            <SearchIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+          <button
+            @click="openBulkModal"
+            class="bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c]/90 transition duration-300 ease-in-out flex items-center space-x-2"
+          >
+            <PlusIcon class="w-5 h-5" />
+          </button>
         </div>
-    
+  
         <!-- Data Table Section -->
-        <div class="w-full h-[28rem] p-4 shadow-md overflow-auto">
-            <table class="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-[#f5365c]">
-                        <th class="border border-gray-300 px-4 py-2">Full Name</th>
-                        <th class="border border-gray-300 px-4 py-2">Status</th>
-                        <th class="border border-gray-300 px-4 py-2">Date</th>
-                        <th class="border border-gray-300 px-4 py-2">Period</th>
-                        <th class="border border-gray-300 px-4 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(row, index) in filteredData" :key="index" class="text-center">
-                        <td class="border border-gray-300 px-4 py-2">{{ row.name }}</td>
-                        <td class="border border-gray-300 px-4 py-2">
-                            <span :class="[row.status == 'Present' ? 'bg-green-600 py-1 text-white px-2 rounded-sm' :
-                               row.status == 'Late' ? 'bg-blue-600 text-white py-1 px-5 rounded-sm' : 'bg-red-600 text-white py-1 px-2 rounded-sm'
-                              ]">{{ row.status }}</span>
-                        </td>
-                        <td class="border border-gray-300 px-4 py-2">{{ row.date }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ row.period }}</td>
-                        <td class="border border-gray-300 px-4 py-2">
-                            <button class="bg-[#f5365c] text-black py-1 px-3 hover:bg-[#f5365cd6]" @click="openModal(row)">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr v-if="filteredData.length === 0">
-                        <td colspan="5" class="border border-gray-300 px-4 py-2 text-center">No Data Found</td>
-                    </tr>
-                </tbody>
+        <div class="bg-white shadow-md overflow-hidden py-4 px-2">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-[#f5365c]">
+                <tr>
+                  <th v-for="header in tableHeaders" :key="header" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider text-center">
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="row in paginatedData" :key="row.id" class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-center">{{ row.name }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-center">
+                    <span :class="getStatusClass(row.status)" class="text-center">
+                      {{ row.status }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-center ">{{ formatDate(row.date) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-center">{{ row.period }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-center">
+                    <button @click="openModal(row)" class="text-[#f5365c] hover:text-[#f5365c]/80 transition duration-300 ease-in-out">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
             </table>
+          </div>
+          <div v-if="filteredData.length === 0" class="px-6 py-4 text-center text-gray-500">
+            No data found
+          </div>
         </div>
-    
+  
         <!-- Pagination Section -->
-        <div class="flex justify-end items-center mt-4 px-4">
-            <button class="bg-[#f5365cd6] py-2 px-4 hover:bg-[#f5365c] disabled:opacity-50" :disabled="currentPage <= 1" @click="prevPage">
-                Back
+        <div class="mt-6 flex justify-between items-center">
+          <p class="text-sm text-gray-700">
+            Showing {{ paginationStart }} to {{ paginationEnd }} of {{ filteredData.length }} results
+          </p>
+          <div class="flex space-x-2">
+            <button
+              @click="prevPage"
+              :disabled="currentPage <= 1"
+              class="bg-white border border-gray-300 text-gray-700 px-4 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-300 ease-in-out"
+            >
+              Previous
             </button>
-            <p class="text-center py-2 px-4">
-                {{ currentPage }} / {{ totalPages }}
-            </p>
-            <button class="bg-[#f5365cd6] py-2 px-4 hover:bg-[#f5365c] disabled:opacity-50" :disabled="currentPage >= totalPages" @click="nextPage">
-                Next
+            <button
+              @click="nextPage"
+              :disabled="currentPage >= totalPages"
+              class="bg-white border border-gray-300 text-gray-700 px-4 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-300 ease-in-out"
+            >
+              Next
             </button>
+          </div>
         </div>
-    
-        <!-- Modal Section for Bulk Attendance -->
-        <div v-if="isBulkModalOpen" class="fixed backdrop-blur-sm inset-0 bg-transparent bg-opacity-50 flex justify-center items-center">
-            <div class="bg-gray-100 p-6 rounded shadow-lg w-full sm:w-[50%] lg:w-[30%]">
-                <h3 class="text-lg font-semibold mb-4">Add Attendance</h3>
-                <div v-for="(row, index) in bulkRows" :key="index" class="mb-4">
-                    <div class="mb-2">
-                        <label class="block">Full Name:</label>
-                        <input v-model="row.name" type="text" class="w-full p-2 border outline-none border-none bg-white rounded" placeholder="Enter full name" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="block">Date:</label>
-                        <input v-model="row.date" type="date" class="w-full p-2 border outline-none border-none bg-white rounded" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="block">Status:</label>
-                        <select v-model="row.status" class="w-full p-2 border outline-none border-none text-black bg-white rounded">
-                            <option value="default" class="text-black" disabled selected>Select an Status</option>
-                            <option value="Present">Present</option>
-                            <option value="Late">Late</option>
-                            <option value="Absent">Absent</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="block">Period:</label>
-                        <select v-model="row.period" class="w-full p-2 border outline-none border-none bg-white rounded">
-                            <option value="default" disabled selected>Select an Period</option>
-                            <option value="Morning">Morning</option>
-                            <option value="Noon">Noon</option>
-                        </select>
-                    </div>
+      </main>
+  
+      <!-- Modal Section for Bulk Attendance -->
+      <Teleport to="body">
+        <Transition name="modal">
+          <div v-if="isBulkModalOpen" class="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex justify-center items-center z-50">
+            <div class="bg-white shadow-xl p-6 w-full max-w-md">
+              <h3 class="text-lg font-semibold mb-4">Add Bulk Attendance</h3>
+              <form @submit.prevent="addBulkAttendance">
+                <div v-for="(row, index) in bulkRows" :key="index" class="mb-4 p-4 bg-gray-50 grid grid-cols-2 gap-4 grid-rows-2">
+                  <div class="mb-2">
+                    <label class="block text-sm font-medium text-gray-700">Full Name:</label>
+                    <input v-model="row.name" type="text" required class="mt-1 block w-full border-gray-300 shadow-sm focus:border-[#f5365c] focus:ring focus:ring-[#f5365c] focus:ring-opacity-50 outline-none py-2 px-2 bg-white" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="block text-sm font-medium text-gray-700">Date:</label>
+                    <input v-model="row.date" type="date" required class="mt-1 block w-full border-gray-300 shadow-sm focus:border-[#f5365c] focus:ring focus:ring-[#f5365c] focus:ring-opacity-50 outline-none py-2 px-2 bg-white" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="block text-sm font-medium text-gray-700">Status:</label>
+                    <select v-model="row.status" required class="mt-1 block w-full border-gray-300 shadow-sm focus:border-[#f5365c] focus:ring focus:ring-[#f5365c] focus:ring-opacity-50 outline-none py-2 px-2 bg-white">
+                      <option value="Present">Present</option>
+                      <option value="Late">Late</option>
+                      <option value="Absent">Absent</option>
+                    </select>
+                  </div>
+                  <div class="mb-2">
+                    <label class="block text-sm font-medium text-gray-700">Period:</label>
+                    <select v-model="row.period" required class="mt-1 block w-full border-gray-300 shadow-sm focus:border-[#f5365c] focus:ring focus:ring-[#f5365c] focus:ring-opacity-50 outline-none py-2 px-2 bg-white">
+                      <option value="Morning">Morning</option>
+                      <option value="Noon">Noon</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="mt-4 flex justify-end">
-                    <button class="bg-[#f5365c] text-white py-2 px-4 transition-all duration-300 ease-in-out" @click="closeBulkModal">
-                        Cancel
-                    </button>
-                    <button class="bg-green-600 text-white py-2 px-4 transition-all duration-300 ease-in-out ml-2" @click="addBulkAttendance">
-                        Add Attendance
-                    </button>
+                <div class="flex justify-end space-x-2">
+                  <button type="button" @click="addBulkRow" class="px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-300 ease-in-out">
+                    Add Row
+                  </button>
+                  <button type="button" @click="closeBulkModal" class="px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-300 ease-in-out">
+                    Cancel
+                  </button>
+                  <button type="submit" class="px-4 py-2 bg-[#f5365c] text-white hover:bg-[#f5365c]/90 transition duration-300 ease-in-out">
+                    Add Attendance
+                  </button>
                 </div>
+              </form>
             </div>
-        </div>
-    
-        <!-- Modal Section for Single View -->
-        <div v-if="isModalOpen" class="fixed backdrop-blur-sm inset-0 bg-opacity-50 flex justify-center items-center z-50">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[50%] lg:w-[30%] max-w-lg">
-                <h3 class="text-2xl font-semibold mb-4 text-gray-800">Attendance Details</h3>
-                <div class="space-y-4">
-                    <p class="text-gray-600"><strong class="font-medium">Name:</strong> {{ modalData?.name }}</p>
-                    <p class="text-gray-600"><strong class="font-medium mr-2">Status:</strong>
-                        <span :class="[modalData?.status === 'Present' ? 'bg-green-600 py-1 text-white px-2 rounded-sm' :
-                        modalData?.status === 'Late' ? 'bg-blue-600 py-1 text-white px-2 rounded-sm' :
-                        'bg-red-600 py-1 text-white px-2 rounded-sm'
-                    ]">{{ modalData?.status }}</span>
-                    </p>
-                    <p class="text-gray-600"><strong class="font-medium">Date:</strong> {{ modalData?.date }}</p>
-                </div>
-                <div class="mt-6 flex justify-end">
-                    <button class="bg-[#f5365c] text-white py-2 px-6 transition duration-300" @click="closeModal">
-                        Close
-                    </button>
-                </div>
+          </div>
+        </Transition>
+      </Teleport>
+  
+      <!-- Modal Section for Single View -->
+      <Teleport to="body">
+        <Transition name="modal">
+          <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div class="bg-white shadow-xl p-6 w-full max-w-md">
+              <h3 class="text-2xl font-semibold mb-4 text-gray-800">Attendance Details</h3>
+              <div class="space-y-4">
+                <p class="text-gray-600"><strong class="font-medium">Name:</strong> {{ modalData?.name }}</p>
+                <p class="text-gray-600">
+                  <strong class="font-medium mr-2">Status:</strong>
+                  <span :class="getStatusClass(modalData?.status)">{{ modalData?.status }}</span>
+                </p>
+                <p class="text-gray-600"><strong class="font-medium">Date:</strong> {{ formatDate(modalData?.date) }}</p>
+                <p class="text-gray-600"><strong class="font-medium">Period:</strong> {{ modalData?.period }}</p>
+              </div>
+              <div class="mt-6 flex justify-end">
+                <button @click="closeModal" class="px-6 py-2 bg-[#f5365c] text-white hover:bg-[#f5365c]/90 transition duration-300 ease-in-out">
+                  Close
+                </button>
+              </div>
             </div>
-        </div>
-    
+          </div>
+        </Transition>
+      </Teleport>
     </div>
-    </template>
-    
-    <script lang="ts" setup>
-    interface Row {
-        name: string;
-        date: string;
-        status: string;
-        period: string;
+  </template>
+  
+  <script setup lang="ts">
+  import { SearchIcon, PlusIcon } from 'lucide-vue-next'
+  
+  interface Row {
+    id: number;
+    name: string;
+    date: string;
+    status: string;
+    period: string;
+  }
+  
+  const search = ref('')
+  const currentPage = ref(1)
+  const rowsPerPage = 10
+  const isModalOpen = ref(false)
+  const isBulkModalOpen = ref(false)
+  const modalData = ref<Row | null>(null)
+  
+  const tableHeaders = ['Full Name', 'Status', 'Date', 'Period', 'Actions']
+  
+  const data = ref<Row[]>([
+    { id: 1, name: 'Xyrel D. Tenefrancia', date: '2025-01-01', status: 'Present', period: 'Noon' },
+    { id: 2, name: 'Pearl Bulawan', date: '2025-01-01', status: 'Absent', period: 'Morning' },
+    { id: 3, name: 'Julieto Ponce', date: '2025-01-02', status: 'Present', period: 'Noon' },
+    { id: 4, name: 'Nempha S. Vicente', date: '2025-01-02', status: 'Late', period: 'Morning' },
+  ])
+  
+  const bulkRows = ref<Omit<Row, 'id'>[]>([{ name: '', date: '', status: 'Present', period: 'Morning' }])
+  
+  const filteredData = computed(() => {
+    return data.value.filter((row: Row) =>
+      row.name.toLowerCase().includes(search.value.toLowerCase())
+    )
+  })
+  
+  const paginatedData = computed(() => {
+    const startIndex = (currentPage.value - 1) * rowsPerPage
+    const endIndex = startIndex + rowsPerPage
+    return filteredData.value.slice(startIndex, endIndex)
+  })
+  
+  const totalPages = computed(() => Math.ceil(filteredData.value.length / rowsPerPage))
+  
+  const paginationStart = computed(() => (currentPage.value - 1) * rowsPerPage + 1)
+  const paginationEnd = computed(() => Math.min(currentPage.value * rowsPerPage, filteredData.value.length))
+  
+  const prevPage = () => {
+    if (currentPage.value > 1) {
+      currentPage.value--
     }
-    
-    const search = ref('');
-    const currentPage = ref(1);
-    const totalPages = ref(10);
-    const isModalOpen = ref(false);
-    const isBulkModalOpen = ref(false);
-    const modalData = ref<Row | null>(null);
-    
-    const rowsPerPage = 10;
-    const data = ref<Row[]>([
-        { name: 'Xyrel D. Tenefrancia', date: '2025-01-01', status: 'Present', period: 'Noon' },
-        { name: 'Pearl Bulawan', date: '2025-01-01', status: 'Absent', period: 'Morning' },
-        { name: 'Julieto Ponce', date: '2025-01-02', status: 'Present', period: 'Noon' },
-        { name: 'Nempha S. Vicente', date: '2025-01-02', status: 'Late', period: 'Morning' },
-    ]);
-    
-    // Data for bulk attendance
-    const bulkRows = ref<Row[]>([{ name: '', date: '', status: 'Present', period: '' }]);
-    
-    const filteredData = computed(() => {
-        const startIndex = (currentPage.value - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-        return data.value.filter((row: Row) =>
-            row.name.toLowerCase().includes(search.value.toLowerCase())
-        ).slice(startIndex, endIndex);
-    });
-    
-    const prevPage = () => {
-        if (currentPage.value > 1) {
-            currentPage.value--;
-        }
-    };
-    
-    const nextPage = () => {
-        if (currentPage.value < totalPages.value) {
-            currentPage.value++;
-        }
-    };
-    
-    const openModal = (row: Row) => {
-        modalData.value = row;
-        isModalOpen.value = true;
-    };
-    
-    const closeModal = () => {
-        isModalOpen.value = false;
-        modalData.value = null;
-    };
-    
-    // Bulk modal functions
-    const openBulkModal = () => {
-        isBulkModalOpen.value = true;
-    };
-    
-    const closeBulkModal = () => {
-        isBulkModalOpen.value = false;
-        bulkRows.value = [{ name: '', date: '', status: 'Present', period: '' }];
-    };
-    
-    const addBulkAttendance = () => {
-        bulkRows.value.forEach((row: Row) => {
-            if (row.name && row.date && row.status) {
-                data.value.push(row);
-            }
-        });
-        closeBulkModal();
-    };
-    </script>
-    
+  }
+  
+  const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+      currentPage.value++
+    }
+  }
+  
+  const openModal = (row: Row) => {
+    modalData.value = row
+    isModalOpen.value = true
+  }
+  
+  const closeModal = () => {
+    isModalOpen.value = false
+    modalData.value = null
+  }
+  
+  const openBulkModal = () => {
+    isBulkModalOpen.value = true
+  }
+  
+  const closeBulkModal = () => {
+    isBulkModalOpen.value = false
+    bulkRows.value = [{ name: '', date: '', status: 'Present', period: 'Morning' }]
+  }
+  
+  const addBulkRow = () => {
+    bulkRows.value.push({ name: '', date: '', status: 'Present', period: 'Morning' })
+  }
+  
+  const addBulkAttendance = () => {
+    const newRows = bulkRows.value.filter((row: any)=> row.name && row.date && row.status && row.period)
+    const lastId = data.value.length > 0 ? Math.max(...data.value.map((row: Row) => row.id)) : 0
+    const newData = newRows.map((row: any, index: any) => ({ ...row, id: lastId + index + 1 }))
+    data.value.push(...newData)
+    closeBulkModal()
+  }
+  
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  }
+  
+  const getStatusClass = (status: string | undefined) => {
+    switch (status) {
+      case 'Present':
+        return 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800'
+      case 'Late':
+        return 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800'
+      case 'Absent':
+        return 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800'
+      default:
+        return 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800'
+    }
+  }
+  </script>
+  
+  <style scoped>
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: opacity 0.3s ease;
+  }
+  
+  .modal-enter-from,
+  .modal-leave-to {
+    opacity: 0;
+  }
+  </style>

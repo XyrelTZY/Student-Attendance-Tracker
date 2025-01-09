@@ -1,153 +1,172 @@
 <template>
-  <div class="bg-gray-100 min-h-screen">
-    <!-- Header Section -->
-    <div class="w-full bg-white min-h-16 shadow-lg">
-      <h2 class="text-3xl px-6 py-4 text-center font-semibold text-gray-700">Attendance Reports</h2>
-    </div>
+  <div class="min-h-screen bg-gray-100">
+    <header class="bg-white shadow">
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">Student Attendance Administrator</h1>
+      </div>
+    </header>
+    <main>
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Dashboard Overview -->
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mb-6">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Dashboard Overview</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-blue-100 p-4 rounded-lg">
+              <h3 class="text-lg font-medium text-blue-800">Present Today</h3>
+              <p class="text-3xl font-bold text-blue-600">{{ presentCount }}</p>
+            </div>
+            <div class="bg-red-100 p-4 rounded-lg">
+              <h3 class="text-lg font-medium text-red-800">Absent Today</h3>
+              <p class="text-3xl font-bold text-red-600">{{ absentCount }}</p>
+            </div>
+            <div class="bg-green-100 p-4 rounded-lg">
+              <h3 class="text-lg font-medium text-green-800">Overall Attendance</h3>
+              <p class="text-3xl font-bold text-green-600">{{ overallAttendancePercentage }}%</p>
+            </div>
+          </div>
+        </div>
 
-    <!-- Main Content Section -->
-    <div class="p-6 grid lg:grid-cols-2 gap-8 mt-6">
+        <!-- Attendance Management -->
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mb-6">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Attendance Management</h2>
+          <div class="mb-4">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search by name, ID, or class"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              @input="searchStudents"
+            />
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="student in filteredStudents" :key="student.id">
+                  <td class="px-6 py-4 whitespace-nowrap">{{ student.name }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ student.id }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ student.class }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      :class="student.present ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    >
+                      {{ student.present ? 'Present' : 'Absent' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button
+                      @click="toggleAttendance(student)"
+                      class="text-indigo-600 hover:text-indigo-900"
+                    >
+                      Toggle
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-      <!-- Generate Attendance Reports Section -->
-      <div class="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-all duration-300">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Generate Attendance Reports</h3>
-        <p class="text-gray-600 mb-4">Create custom attendance reports based on your criteria.</p>
-        <div class="mt-4">
-          <select v-model="selectedReportCriteria" class="border border-gray-300 rounded-md p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option disabled value="">Select Report Criteria</option>
-            <option>Daily Attendance</option>
-            <option>Weekly Attendance</option>
-            <option>Monthly Attendance</option>
-          </select>
-          <button 
-            @click="generateReport"
-            class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-all w-full mt-4">
-            Generate Report
-          </button>
+        <!-- Reporting -->
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Reporting</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">Generate Report</h3>
+              <button
+                @click="generateReport"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Generate Report
+              </button>
+            </div>
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">Class Summary</h3>
+              <ul class="list-disc pl-5">
+                <li v-for="(percentage, className) in classAttendancePercentages" :key="className">
+                  {{ className }}: {{ percentage }}%
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Export Attendance Data Section -->
-      <div class="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-all duration-300">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Export Attendance Data</h3>
-        <p class="text-gray-600 mb-4">Export attendance reports to Excel, PDF, or other formats.</p>
-        <div class="mt-4">
-          <select v-model="exportFormat" class="border border-gray-300 rounded-md p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option disabled value="">Select Export Format</option>
-            <option>Excel</option>
-            <option>PDF</option>
-            <option>CSV</option>
-          </select>
-          <button 
-            @click="exportData"
-            class="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 transition-all w-full mt-4">
-            Export Data
-          </button>
-        </div>
-      </div>
-
-      <!-- Attendance Summary Section -->
-      <div class="bg-white shadow-lg rounded-lg p-6 col-span-2 hover:shadow-xl transition-all duration-300">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Attendance Summary</h3>
-        <p class="text-gray-600 mb-4">Overview of the total attendance for each class or period.</p>
-        <div class="mt-4 overflow-x-auto">
-          <table class="min-w-full table-auto">
-            <thead>
-              <tr class="bg-[#f5365c] text-white">
-                <th class="px-4 py-2 text-left">Class Name</th>
-                <th class="px-4 py-2 text-left">Teacher</th>
-                <th class="px-4 py-2 text-left">Total Students</th>
-                <th class="px-4 py-2 text-left">Attendance Percentage</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(classItem, index) in classes" :key="index" class="hover:bg-gray-100 transition-all duration-200">
-                <td class="border px-4 py-2">{{ classItem.name }}</td>
-                <td class="border px-4 py-2">{{ classItem.teacher }}</td>
-                <td class="border px-4 py-2">{{ classItem.students }}</td>
-                <td class="border px-4 py-2">{{ getAttendancePercentage(classItem.id) }}%</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
-<script lang="ts" setup>
-interface Class {
-  id: number
-  name: string
-  teacher: string
-  students: number
-}
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 
-interface Attendance {
-  classId: number
-  attendancePercentage: number
-}
-
-// Defining reactive states
-const classes = ref<Class[]>([
-  { id: 1, name: 'Math 101', teacher: 'Mr. Smith', students: 30 },
-  { id: 2, name: 'English Literature', teacher: 'Ms. Johnson', students: 25 },
+// Mock data for students
+const students = ref([
+  { id: '001', name: 'Alice Johnson', class: 'Class A', present: true },
+  { id: '002', name: 'Bob Smith', class: 'Class B', present: false },
+  { id: '003', name: 'Charlie Brown', class: 'Class A', present: true },
+  { id: '004', name: 'Diana Prince', class: 'Class C', present: true },
+  { id: '005', name: 'Ethan Hunt', class: 'Class B', present: false },
 ])
 
-const selectedReportCriteria = ref<string>('')
-const exportFormat = ref<string>('')
+const searchQuery = ref('')
 
-// Example attendance data
-const attendanceData = ref<Attendance[]>([
-  { classId: 1, attendancePercentage: 80 },
-  { classId: 2, attendancePercentage: 90 },
-])
+const filteredStudents = computed(() => {
+  if (!searchQuery.value) return students.value
+  const query = searchQuery.value.toLowerCase()
+  return students.value.filter(student => 
+    student.name.toLowerCase().includes(query) ||
+    student.id.toLowerCase().includes(query) ||
+    student.class.toLowerCase().includes(query)
+  )
+})
 
-// Function to generate attendance report based on selected criteria
+const presentCount = computed(() => students.value.filter(s => s.present).length)
+const absentCount = computed(() => students.value.filter(s => !s.present).length)
+const overallAttendancePercentage = computed(() => 
+  ((presentCount.value / students.value.length) * 100).toFixed(2)
+)
+
+const classAttendancePercentages = computed(() => {
+  const classSummary = {}
+  students.value.forEach(student => {
+    if (!classSummary[student.class]) {
+      classSummary[student.class] = { total: 0, present: 0 }
+    }
+    classSummary[student.class].total++
+    if (student.present) classSummary[student.class].present++
+  })
+
+  const percentages = {}
+  for (const [className, data] of Object.entries(classSummary)) {
+    percentages[className] = ((data.present / data.total) * 100).toFixed(2)
+  }
+  return percentages
+})
+
+const toggleAttendance = (student) => {
+  student.present = !student.present
+}
+
+const searchStudents = () => {
+  // This function is called on input, but filtering is handled by the computed property
+}
+
 const generateReport = () => {
-  if (selectedReportCriteria.value) {
-    alert(`Generating ${selectedReportCriteria.value} report...`)
-  } else {
-    alert('Please select a report criteria.')
-  }
+  // In a real application, this would generate a report based on the current data
+  console.log('Generating report...')
+  alert('Report generated! (This is a mock action)')
 }
 
-// Function to export attendance data
-const exportData = () => {
-  if (exportFormat.value) {
-    alert(`Exporting data to ${exportFormat.value}...`)
-  } else {
-    alert('Please select an export format.')
-  }
-}
-
-// Function to get attendance percentage for each class
-const getAttendancePercentage = (classId: number) => {
-  const attendance = attendanceData.value.find((item: Attendance) => item.classId === classId)
-  return attendance ? attendance.attendancePercentage : 'N/A'
-}
+onMounted(() => {
+  // In a real application, you might fetch initial data here
+  console.log('Component mounted')
+})
 </script>
-
-<style scoped>
-/* Adding a smooth transition effect for hover and focus */
-input:focus, select:focus {
-  border-color: #4c51bf;
-  outline: none;
-}
-
-button:focus {
-  outline: none;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-table th {
-  background-color: #f5365c;
-}
-
-table tbody tr:hover {
-  background-color: #f7fafc;
-}
-</style>
