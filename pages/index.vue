@@ -74,13 +74,18 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * Represents attendance data for a student on a specific date.
+ * @interface AttendanceData
+ */
 interface AttendanceData {
-    id: number
-    name: string
-    date: string
-    status: 'Present' | 'Absent'
+    id: number; // Unique identifier for the attendance record
+    name: string; // Name of the student
+    date: string; // Date of the attendance record (in 'YYYY-MM-DD' format)
+    status: 'Present' | 'Absent'; // Attendance status for the student ('Present' or 'Absent')
 }
 
+// List of attendance records for students
 const attendanceData = ref < AttendanceData[] > ([{
         id: 1,
         name: "John Doe",
@@ -131,11 +136,21 @@ const attendanceData = ref < AttendanceData[] > ([{
     },
 ])
 
+// Reactive search query to filter attendance records by student name
 const search = ref('')
-const selectedDate = ref('')
-const currentPage = ref(1)
-const itemsPerPage = 5
 
+// Reactive selected date to filter attendance records by date
+const selectedDate = ref('')
+
+// Current page for pagination
+const currentPage = ref(1)
+
+// Number of items to display per page in pagination
+const itemsPerPage = ref(5)
+
+/**
+ * Computed property to filter attendance records based on search query and selected date.
+ */
 const filteredAttendance = computed(() => {
     return attendanceData.value.filter((item: AttendanceData) =>
         item.name.toLowerCase().includes(search.value.toLowerCase()) &&
@@ -143,51 +158,71 @@ const filteredAttendance = computed(() => {
     )
 })
 
-const totalPages = computed(() => Math.ceil(filteredAttendance.value.length / itemsPerPage))
+// Total number of pages based on filtered attendance records
+const totalPages = computed(() => Math.ceil(filteredAttendance.value.length / itemsPerPage.value))
 
+/**
+ * Computed property to get the attendance records for the current page.
+ */
 const paginatedAttendance = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
+    const start = (currentPage.value - 1) * itemsPerPage.value
+    const end = start + itemsPerPage.value
     return filteredAttendance.value.slice(start, end)
 })
 
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage)
-const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, filteredAttendance.value.length))
+// Start index for the current page
+const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value)
 
+// End index for the current page, ensuring it doesn't exceed the total length
+const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, filteredAttendance.value.length))
+
+/**
+ * Moves to the previous page in the pagination.
+ */
 const prevPage = () => {
     if (currentPage.value > 1) currentPage.value--
 }
 
+/**
+ * Moves to the next page in the pagination.
+ */
 const nextPage = () => {
     if (currentPage.value < totalPages.value) currentPage.value++
 }
 
+/**
+ * Computed property to get all unique attendance dates from the data.
+ */
 const uniqueDates = computed(() => {
     return [...new Set(attendanceData.value.map((item: AttendanceData) => item.date))]
 })
 
+/**
+ * Computed property to generate statistics cards showing total students, absentees, and attendance counts.
+ */
 const cards = computed(() => [{
-        label: new Set(attendanceData.value.map((item: AttendanceData) => item.name)).size,
+        label: new Set(attendanceData.value.map((item: AttendanceData) => item.name)).size, // Unique student count
         title: "Total Students",
     },
     {
-        label: attendanceData.value.filter((item: AttendanceData) => item.status === 'Absent').length,
+        label: attendanceData.value.filter((item: AttendanceData) => item.status === 'Absent').length, // Total absent students
         title: "Total Absent",
     },
     {
-        label: attendanceData.value.filter((item: AttendanceData) => item.status === 'Absent' && item.date === new Date().toISOString().split('T')[0]).length,
+        label: attendanceData.value.filter((item: AttendanceData) => item.status === 'Absent' && item.date === new Date().toISOString().split('T')[0]).length, // Absent today
         title: "Absent Today",
     },
     {
-        label: attendanceData.value.filter((item: AttendanceData) => item.status === 'Present' && item.date === new Date().toISOString().split('T')[0]).length,
+        label: attendanceData.value.filter((item: AttendanceData) => item.status === 'Present' && item.date === new Date().toISOString().split('T')[0]).length, // Present today
         title: "Present Today",
     }
 ])
 
+// Array of colors for the statistics cards
 const cardColors = [
-    'bg-[#CFDEF',
-    'bg-[#CFDEF',
-    'bg-[#CFDEF',
-    'bg-[#CFDEF'
+    'bg-[#CFDEF]',
+    'bg-[#CFDEF]',
+    'bg-[#CFDEF]',
+    'bg-[#CFDEF]'
 ]
 </script>

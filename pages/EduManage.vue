@@ -7,21 +7,20 @@
         </div>
         <div class="flex-wrap">
             <div class="px-4 py-4">
-                <div class="justify-between sm:justify-center">
-                    <button @click="openModal" class="mb-2 p-2 bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c] float-right justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 5v14m7-7H5"></path>
-                        </svg>
-                    </button>
-                    <!-- Search Bar -->
-                    <div class="mb-4 relative">
-                        <input v-model="searchQuery" type="text" placeholder="Search..." class="w-auto sm:w-auto p-2 pl-10 pr-2 border border-gray-300 bg-white rounded border-none shadow-lg" />
-                        <!-- Magnifying Glass Icon -->
+                <div class="flex justify-between items-center">
+                    <div class="mb-4 relative flex-1 max-w-xs">
+                        <input v-model="searchQuery" type="text" placeholder="Search..." class="w-full p-2 pl-10 pr-2 border border-gray-300 bg-white rounded border-none shadow-lg" />
                         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                     </div>
+
+                    <button @click="openModal" class="mb-2 p-2 bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c] ml-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14m7-7H5"></path>
+                        </svg>
+                    </button>
                 </div>
     
                 <div class="w-full px-4 py-4 shadow-lg overflow-x-auto">

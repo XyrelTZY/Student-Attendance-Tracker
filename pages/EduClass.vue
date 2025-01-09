@@ -71,20 +71,29 @@
 </template>
 
 <script lang="ts" setup>
-// Defining TypeScript types for class and student
+/**
+ * Represents a class in the system.
+ * @interface Class
+ */
 interface Class {
-    id: number;
-    name: string;
-    teacher: string;
-    students: number;
+    id: number; // Unique identifier for the class
+    name: string; // Name of the class (e.g., 'Math 101')
+    teacher: string; // Name of the teacher for the class
+    students: number; // Number of students enrolled in the class
 }
 
+/**
+ * Represents the attendance data for a class.
+ * @interface Attendance
+ */
 interface Attendance {
-    classId: number;
-    attendance: string;
+    classId: number; // ID of the class
+    attendance: string; // Attendance percentage for the class (e.g., '80%')
 }
 
 // Defining reactive states
+
+// List of all classes
 const classes = ref < Class[] > ([{
         id: 1,
         name: 'Math 101',
@@ -97,17 +106,23 @@ const classes = ref < Class[] > ([{
         teacher: 'Ms. Johnson',
         students: 25
     },
-]);
+])
 
+// A new class being added or edited
 const newClass = ref < Class > ({
-    id: 0,
+    id: 0, // The default ID is 0, which means it will be a new class
     name: '',
     teacher: '',
     students: 0,
-});
+})
 
-const selectedClass = ref < number | null > (null);
-const newStudentName = ref < string > ('');
+// The selected class ID for various actions (e.g., assigning a student)
+const selectedClass = ref < number | null > (null)
+
+// The name of the new student to be assigned
+const newStudentName = ref < string > ('')
+
+// List of attendance data for the classes
 const attendanceData = ref < Attendance[] > ([{
         classId: 1,
         attendance: '80%'
@@ -116,47 +131,64 @@ const attendanceData = ref < Attendance[] > ([{
         classId: 2,
         attendance: '90%'
     },
-]);
+])
 
-// Function to add or edit a class
+/**
+ * Adds a new class or updates an existing one in the `classes` array.
+ * If the class already has an `id`, it will update the class, otherwise, a new class will be added.
+ */
 const addClass = () => {
+    // If the class ID is 0, it means we are adding a new class
     if (newClass.value.id === 0) {
-        newClass.value.id = Date.now();
+        newClass.value.id = Date.now(); // Use the current timestamp as a unique ID
         classes.value.push({
             ...newClass.value
-        });
+        }) // Add the new class to the classes list
     } else {
-        const index = classes.value.findIndex((classItem: Class) => classItem.id === newClass.value.id);
+        // If the class ID is not 0, we are updating an existing class
+        const index = classes.value.findIndex((classItem: Class) => classItem.id === newClass.value.id)
         if (index !== -1) {
             classes.value[index] = {
                 ...newClass.value
-            };
+            } // Update the class at the found index
         }
     }
+    // Reset the newClass state to its default values
     newClass.value = {
         id: 0,
         name: '',
         teacher: '',
         students: 0
-    };
-};
+    }
+}
 
-// Function to assign a student to a class
+/**
+ * Assigns a student to the selected class.
+ * If a student name and selected class are provided, it will display an alert confirming the assignment.
+ */
 const assignStudent = () => {
     if (selectedClass.value && newStudentName.value) {
-        const classItem = classes.value.find((classItem: Class) => classItem.id === selectedClass.value);
+        const classItem = classes.value.find((classItem: Class) => classItem.id === selectedClass.value)
         if (classItem) {
-            alert(`${newStudentName.value} has been assigned to ${classItem.name}.`);
-            newStudentName.value = '';
+            // Display an alert confirming the student's assignment
+            alert(`${newStudentName.value} has been assigned to ${classItem.name}.`)
+            // Reset the new student name field
+            newStudentName.value = ''
         }
     }
-};
+}
 
-// Function to get the attendance for a class
+/**
+ * Fetches the attendance for a given class based on its `classId`.
+ * @param {number} classId The ID of the class for which attendance needs to be fetched.
+ * @returns {string} The attendance percentage for the class or 'N/A' if no attendance data exists for the class.
+ */
 const getAttendance = (classId: number) => {
-    const attendance = attendanceData.value.find((item: Attendance) => item.classId === classId);
-    return attendance ? attendance.attendance : 'N/A';
-};
+    // Find the attendance data for the given classId
+    const attendance = attendanceData.value.find((item: Attendance) => item.classId === classId)
+    // Return the attendance percentage or 'N/A' if no data found
+    return attendance ? attendance.attendance : 'N/A'
+}
 </script>
 
 <style scoped>

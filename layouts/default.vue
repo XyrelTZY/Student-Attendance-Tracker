@@ -142,7 +142,6 @@ const setActive = async (to: string): Promise < string > => {
  * @Path
  */
 
-
 /**
  * Watches for changes to the current route path and logs the updated path.
  *

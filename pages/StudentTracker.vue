@@ -3,7 +3,7 @@
       <!-- Header Section -->
       <header class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 ">
-          <h1 class="text-3xl">Attendance Management</h1>
+          <h1 class="text-1xl">Attendance Management</h1>
         </div>
       </header>
   
@@ -33,7 +33,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-[#f5365c]">
                 <tr>
-                  <th v-for="header in tableHeaders" :key="header" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider text-center">
+                  <th v-for="header in tableHeaders" :key="header" class="px-6 py-3 text-xs uppercase tracking-wider text-center">
                     {{ header }}
                   </th>
                 </tr>
@@ -48,7 +48,7 @@
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center ">{{ formatDate(row.date) }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">{{ row.period }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-center">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                     <button @click="openModal(row)" class="text-[#f5365c] hover:text-[#f5365c]/80 transition duration-300 ease-in-out">
                       View
                     </button>
