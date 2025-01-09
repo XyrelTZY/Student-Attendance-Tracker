@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 $m: 0;
 $p: 0;
@@ -15,12 +15,12 @@ $theme5: #f7fafc;
     padding: $p;
     box-sizing: $bx;
 }
-body{
-    font-family: 'Roboto', sans-serif;
+html, body{
+    font-family: 'Roboto', sans-serif, Tahoma, Geneva;
     background: linear-gradient(
         to bottom,
-        $theme1 10%,
-        $theme2 10%
-      );
+        $theme1 9.7%,
+        $theme2 9.7%);
     min-height: 100%;
+    overflow-y: hidden;
 }

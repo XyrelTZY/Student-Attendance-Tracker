@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="w-full bg-white min-h-16 shadow-lg">
-        <h2 class="text-xl sm:text-2xl px-4 py-4 text-center lg:float-start break-words whitespace-normal">
+        <h2 class="text-xl sm:text-2xl px-4 py-4 text-center lg:float-start break-words whitespace-normal md:float-start">
             Student Management
         </h2>
     </div>

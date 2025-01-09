@@ -1,10 +1,10 @@
 <template>
-<div class="flex">
+<div class="flex ">
     <!-- Sidebar -->
-    <div class="sidebar-container w-16 h-screen hover:w-44 overflow-hidden transition-all duration-300 ease-in-out">
+    <div class="sidebar-container w-16 h-screen md:h-[50rem] hover:w-44 overflow-hidden transition-all duration-300 ease-in-out')]">
         <div class="my-2 lg:mx-[0.25rem] mx-3 border-b-[1px] flex flex-row gap-4 relative">
             <img src="../assets/images/SchoolLogo.png" alt="ZSNHS School Logo" class="w-14">
-            <figure v-for="(schoolname, index) in title" :key="index" class="abosolute mt-4">{{ schoolname.title}}</figure>
+            <figure v-for="(schoolname, index) in title" :key="index" class="abosolute mt-4 ">{{ schoolname.title}}</figure>
         </div>
         <ul class="flex flex-col gap-2 mt-4 text-center">
             <li v-for="(link, index) in links" :key="index" @click="setActive(link.to)" :class="[ 
@@ -14,7 +14,7 @@
                  * @Status_Decided
                  * ? 'bg-indigo-300 text-white border-l-8 rounded-r-lg border-blue-500' 
                  */
-                ? 'border-l-8 ml-[0.05rem] rounded-l-sm border-[#f5365c] bg-blue-100'
+                ? 'border-l-8 ml-[0.05rem] rounded-l-sm border-[#f5365c] bg-[#e9ecef]'
                 : 'hover:bg-[#CFDEF3]' 
             ]">
                 <!-- SVG Icon -->
@@ -41,7 +41,9 @@ const activeLink = useActiveLink(); //State Management
 const router = useRouter(); //Router Navigation
 const route = useRoute(); //To Find Routes Path
 
-const title = [{ title: <string> "ZSNHS"}];
+const title = [{
+    title: < string > "ZSNHS"
+}]; //Title
 const links = [{
         /**
          * @Dashboard
@@ -54,8 +56,7 @@ const links = [{
         icon: `
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
         <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-      </svg>
-    `, // mdi:view-dashboard
+      </svg>`,
     },
     {
         /**
@@ -128,10 +129,12 @@ const links = [{
  * @returns 
  */
 const setActive = async (to: string): Promise < string > => {
-    activeLink.value = to;
-    router.push(to);
+    while (true) {
+        activeLink.value = to;
+        router.push(to);
 
-    return route.path
+        return route.path
+    }
 };
 
 /**
@@ -139,7 +142,6 @@ const setActive = async (to: string): Promise < string > => {
  * @Path
  */
 
-let interval: any;
 
 /**
  * Watches for changes to the current route path and logs the updated path.
@@ -152,7 +154,7 @@ let Dashboard: any = null;
 watch(
     () => route.path,
     async (newPath: string) => {
-        if (newPath === Dashboard) return;
+        if (newPath === Dashboard) void
         console.log("Navigated To:", newPath);
 
         if (newPath === "/") {
@@ -167,6 +169,9 @@ watch(
  * @Log
  * @Check
  */
+
+let interval: any;
+
 onMounted(() => {
     const lastPath = route.path;
 
