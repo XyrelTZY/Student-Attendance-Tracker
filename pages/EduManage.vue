@@ -1,375 +1,279 @@
 <template>
-    <div class="grid grid-cols-1">
-        <div class="w-full bg-white min-w-44 shadow-lg mb-4">
-            <h2 class="py-4 px-2 text-xl text-center lg:float-start break-words whitespace-normal md:float-start">
-                Student Management
-            </h2>
-        </div>
-        <div class="flex-wrap">
-            <div class="px-4 py-4">
-                <div class="flex justify-between items-center">
-                    <div class="mb-4 relative flex-1 max-w-xs">
-                        <input v-model="searchQuery" type="text" placeholder="Search..." class="w-full p-2 pl-10 pr-2 border border-gray-300 bg-white rounded border-none shadow-lg" />
-                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="2">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </div>
+  <v-container class="pa-4">
+    <!-- Dashboard Header -->
+    <v-card class="mb-6">
+      <v-card-title class="text-h5">Student Management</v-card-title>
+    </v-card>
 
-                    <button @click="openModal" class="mb-2 p-2 bg-[#f5365c] text-white py-2 px-4 hover:bg-[#f5365c] ml-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 5v14m7-7H5"></path>
-                        </svg>
-                    </button>
-                </div>
-    
-                <div class="w-full px-4 py-4 shadow-lg overflow-x-auto">
-                    <!-- Data Table -->
-                    <table class="w-full min-w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr class="bg-[#f5365c]">
-                                <th class="border border-gray-300 p-2">ID</th>
-                                <th class="border border-gray-300 p-2">Name</th>
-                                <th class="border border-gray-300 p-2">Date of Birth</th>
-                                <th class="border border-gray-300 p-2">Grade</th>
-                                <th class="border border-gray-300 p-2">Section</th>
-                                <th class="border border-gray-300 p-2">Track</th>
-                                <th class="border border-gray-300 p-2">Phone No.</th>
-                                <th class="border border-gray-300 p-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(student, index) in paginatedStudents" :key="index || -1" class="odd:bg-white even:bg-gray-50">
-                                <td class="border border-gray-300 p-2 text-center">{{ student.id }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ student.name }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ student.dateOfBirth }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ student.grade }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ student.section }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ student.track }}</td>
-                                <td class="border border-gray-300 p-2 text-center">{{ student.phoneNo }}</td>
-                                <td class="border border-gray-300 p-2 w-8">
-                                    <div class="flex justify-center gap-2">
-                                        <button @click="editStudent(student)" class="bg-[#f5365c] w-20 py-2">Edit</button>
-                                        <button @click="viewAttendance(student)" class="bg-[#f5365c] w-20 py-2">View</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Conditional row when no students match the search query -->
-                            <tr v-if="filteredStudents.length === 0" class="border border-gray-300">
-                                <td colspan="8" class="border border-gray-300 px-4 py-2 text-center">No Data Found</td>
-                            </tr>
-                        </tbody>
-    
-                    </table>
-    
-                </div>
-    
-                <!-- Pagination -->
-                <div class="flex justify-end gap-2 items-center mt-4">
-                    <button :disabled="currentPage === 1" @click="prevPage" class="p-2 bg-[#f5365c] text-white disabled:opacity-50">
-                        Previous
-                    </button>
-                    <span>Page {{ currentPage }} / {{ totalPages }}</span>
-                    <button :disabled="currentPage === totalPages" @click="nextPage" class="p-2 bg-[#f5365c] text-white disabled:opacity-50 px-5">
-                        Next
-                    </button>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Modal: Add/Edit Student -->
-        <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50">
-            <div class="bg-white p-6 shadow-lg max-w-[28rem] w-full">
-                <h3 class="text-lg font-semibold mb-4 text-center">{{ isEditing ? 'Update Student' : 'Add New Student' }}</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Name</label>
-                        <input v-model="form.name" type="text" class="w-full p-2 border border-gray-300 rounded" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Date of Birth</label>
-                        <input v-model="form.dateOfBirth" type="date" class="w-full p-2 border border-gray-300 rounded" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Grade</label>
-                        <input v-model="form.grade" type="text" class="w-full p-2 border border-gray-300 rounded" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Section</label>
-                        <input v-model="form.section" type="text" class="w-full p-2 border border-gray-300 rounded" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Track</label>
-                        <input v-model="form.track" type="text" class="w-full p-2 border border-gray-300 rounded" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Phone No.</label>
-                        <input v-model="form.phoneNo" type="text" class="w-full p-2 border border-gray-300 rounded" />
-                    </div>
-                </div>
-                <div class="flex justify-end">
-                    <button @click="closeModal" class="p-2 bg-[#f5365c] text-white mr-2">Cancel</button>
-                    <button @click="saveStudent" class="p-2 bg-green-500 text-white px-4">Save</button>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Modal: View Attendance Record -->
-        <div v-if="isAttendanceModalOpen" class="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50">
-            <div class="bg-white p-6 rounded shadow-lg w-1/3 max-w-full">
-                <h3 class="text-lg font-semibold mb-4">Attendance Record for {{ selectedStudent?.name }}</h3>
-                <div class="mb-4">
-                    <ul>
-                        <li v-for="attendance in selectedStudent?.attendance" :key="attendance.date" class="border mb-2 px-2 py-3">
-                            <span>{{ attendance.date }} - </span>
-                            <span :class="attendance.status == 'Present' ? 'text-green-400' : 'text-red-400'">{{ attendance.status }}
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="flex justify-end">
-                    <button @click="closeAttendanceModal" class="p-2 bg-[#f5365c] text-white">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    </template>
-    
+    <!-- Search and Add Button Section -->
+    <v-row class="mb-4" align="center">
+      <v-col class="d-flex" cols="12" sm="6">
+        <v-text-field
+          v-model="searchQuery"
+          placeholder="Search..."
+          class="mr-2"
+        />
+      </v-col>
+      <v-col class="d-flex justify-end" cols="12" sm="6">
+        <v-btn @click="openModal" color="#f5365c" class="white--text">
+          <v-icon left>
+            mdi-plus
+          </v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <!-- Data Table -->
+    <v-card class="shadow-lg">
+      <v-card-text>
+        <v-data-table
+          :items="paginatedStudents"
+          :items-per-page="itemsPerPage"
+          class="elevation-1"
+        >
+          <!-- <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title class="text-left">Students Information</v-toolbar-title>
+            </v-toolbar>
+          </template> -->
+          <template v-slot:item.actions="{ item }">
+            <v-btn @click="editStudent(item)" color="#f5365c" class="white--text">Edit</v-btn>
+            <v-btn @click="viewStudent(item)" color="#f5365c" class="white--text">View</v-btn>
+          </template>
+          <template v-slot:no-data>
+            <v-alert type="info" class="mt-4">
+              No Data Found
+            </v-alert>
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
+
+    <!-- Modal: Add/Edit Student -->
+    <v-dialog v-model="isModalOpen" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">{{ isEditing ? 'Update Student' : 'Add New Student' }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="form.FullName" label="Name" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="form.BirthDate" label="Date of Birth" type="date" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="form.GradeLevel" label="Grade" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="form.Section" label="Section" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="form.Track" label="Track" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="form.PhoneNo" label="Phone No." required />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeModal" color="grey">Cancel</v-btn>
+          <v-btn @click="saveStudent" color="green">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal: View Student Details -->
+    <v-dialog v-model="isViewModalOpen" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Details for {{ selectedStudent?.FullName }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Name: {{ selectedStudent?.FullName }}</v-list-item-title>
+                <v-list-item-subtitle>Date of Birth: {{ selectedStudent?.BirthDate }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Grade: {{ selectedStudent?.GradeLevel }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Section: {{ selectedStudent?.Section }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Track: {{ selectedStudent?.Track }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Phone No.: {{ selectedStudent?.PhoneNo }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeViewModal" color="#f5365c" class="white--text">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
+</template>
 
 <script lang="ts" setup>
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
+
+interface Attendance {
+  date: string;
+  status: string;
+}
+
 interface Student {
-    id: number | null;
-    name: string;
-    dateOfBirth: string;
-    grade: number | null;
-    phoneNo: number | null;
-    track: string,
-        section: string,
-        attendance: {
-            date: string;status: string
-        } []; // Attendance data
-};
+  id: number | null;
+  FullName: string;
+  BirthDate: string;
+  GradeLevel: number | null;
+  PhoneNo: string | null;
+  Track: string;
+  Section: string;
+  attendance: Attendance[];
+}
 
-const students = ref < Student[] > ([{
-        id: 1,
-        name: 'Pearl Bulawan',
-        dateOfBirth: '2005-03-12',
-        grade: 11,
-        phoneNo: 9123567789,
-        track: "TVL",
-        section: "Ryzen",
-        attendance: [{
-                date: '2025-01-01',
-                status: 'Present'
-            },
-            {
-                date: '2025-01-02',
-                status: 'Absent'
-            },
-        ]
-    },
-    {
-        id: 2,
-        name: 'Von Villaver',
-        dateOfBirth: '2006-02-22',
-        grade: 11,
-        phoneNo: 9123567789,
-        track: "TVL",
-        section: "Haswell",
-        attendance: [{
-                date: '2025-01-01',
-                status: 'Present'
-            },
-            {
-                date: '2025-01-02',
-                status: 'Present'
-            },
-        ]
-    },
-    {
-        id: 3,
-        name: 'Xyrel Tenefrancia',
-        dateOfBirth: '2006-02-22',
-        grade: 11,
-        phoneNo: 9123567789,
-        track: "TVL",
-        section: "Haswell",
-        attendance: [{
-                date: '2025-01-01',
-                status: 'Present'
-            },
-            {
-                date: '2025-01-02',
-                status: 'Present'
-            },
-        ]
-    },
-    {
-        id: 4,
-        name: 'Julieto Ponce',
-        dateOfBirth: '2006-02-22',
-        grade: 11,
-        phoneNo: 9123567789,
-        track: "TVL",
-        section: "Haswell",
-        attendance: [{
-                date: '2025-01-01',
-                status: 'Present'
-            },
-            {
-                date: '2025-01-02',
-                status: 'Present'
-            },
-        ]
-    },
-    {
-        id: 5,
-        name: 'Nempha Vicente',
-        dateOfBirth: '2006-02-22',
-        grade: 11,
-        phoneNo: 9123567789,
-        track: "TVL",
-        section: "Haswell",
-        attendance: [{
-                date: '2025-01-01',
-                status: 'Present'
-            },
-            {
-                date: '2025-01-02',
-                status: 'Present'
-            },
-        ]
-    },
-    {
-        id: 6,
-        name: 'Jayrald Deniega',
-        dateOfBirth: '2006-02-22',
-        grade: 11,
-        phoneNo: 9123567789,
-        track: "TVL",
-        section: "Haswell",
-        attendance: [{
-                date: '2025-01-01',
-                status: 'Present'
-            },
-            {
-                date: '2025-01-02',
-                status: 'Present'
-            },
-        ]
-    }
-]);
-
+const students = ref<Student[]>([]);
 const searchQuery = ref('');
-const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = ref(5);
+const pagination = ref({ page: 1, rowsPerPage: itemsPerPage.value });
 
 const isModalOpen = ref(false);
 const isEditing = ref(false);
-const isAttendanceModalOpen = ref(false);
-const selectedStudent = ref < Student | null > (null);
+const isViewModalOpen = ref(false);
+const selectedStudent = ref<Student | null>(null);
 
-const form = ref < Student > ({
-    id: null,
-    name: '',
-    dateOfBirth: '',
-    grade: null,
-    phoneNo: null,
-    section: '',
-    track: '',
-    attendance: []
+const form = ref<Student>({
+  id: null,
+  FullName: '',
+  BirthDate: '',
+  GradeLevel: null,
+  PhoneNo: null,
+  Track: '',
+  Section: '',
+  attendance: [],
 });
 
+// Fetch data from the API
+onMounted(async () => {
+  try {
+    const response = await axios.get('http://localhost:5251/api/students');
+    students.value = response.data.map((student: any) => ({
+      id: student.studentID,
+      FullName: student.fName,
+      BirthDate: student.birthDate,
+      GradeLevel: student.gradeLevel,
+      PhoneNo: student.phoneNumber,
+      Track: student.track,
+      Section: student.section,
+    }));
+  } catch (error) {
+    console.error('Error fetching students:', error);
+  }
+});
+
+// Computed properties
 const filteredStudents = computed(() => {
-    if (!searchQuery.value) return students.value;
-    return students.value.filter((student: Student) =>
-        student.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
+  if (!searchQuery.value) return students.value;
+  return students.value.filter((student: Student) =>
+    student.FullName.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
-
-const totalPages = computed(() => Math.ceil(filteredStudents.value.length / itemsPerPage));
 
 const paginatedStudents = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredStudents.value.slice(start, end);
+  const start = (pagination.value.page - 1) * pagination.value.rowsPerPage;
+  const end = start + pagination.value.rowsPerPage;
+  return filteredStudents.value.slice(start, end);
 });
 
-function prevPage() {
-    if (currentPage.value > 1) currentPage.value--;
-}
-
-function nextPage() {
-    if (currentPage.value < totalPages.value) currentPage.value++;
-}
-
 function openModal() {
-    isEditing.value = false;
-    form.value = {
-        id: null,
-        name: '',
-        dateOfBirth: '',
-        grade: null,
-        section: '',
-        track: '',
-        phoneNo: null,
-        attendance: []
-    };
-    isModalOpen.value = true;
-}
-
-function editStudent(student: Student) {
-    isEditing.value = true;
-    form.value = {
-        ...student
-    };
-    isModalOpen.value = true;
+  isEditing.value = false;
+  form.value = {
+    id: null,
+    FullName: '',
+    BirthDate: '',
+    GradeLevel: null,
+    Track: '',
+    Section: '',
+    PhoneNo: null,
+    attendance: [],
+  };
+  isModalOpen.value = true;
 }
 
 function closeModal() {
-    isModalOpen.value = false;
+  isModalOpen.value = false;
 }
 
-function saveStudent() {
+function editStudent(student: Student) {
+  isEditing.value = true;
+  form.value = { ...student };
+  isModalOpen.value = true;
+}
+
+function viewStudent(student: Student) {
+  selectedStudent.value = student;
+  isViewModalOpen.value = true;
+}
+
+function closeViewModal() {
+  isViewModalOpen.value = false;
+}
+
+async function saveStudent() {
+  const studentData = { ...form.value };
+
+  if (!studentData.FullName || !studentData.BirthDate || !studentData.Track || !studentData.Section) {
+    console.error('Missing required fields');
+    return;
+  }
+
+  if (studentData.GradeLevel === null) {
+    studentData.GradeLevel = 0; // Assuming 0 for null GradeLevel
+  }
+
+  if (studentData.BirthDate) {
+    studentData.BirthDate = new Date(studentData.BirthDate).toISOString();
+  }
+
+  try {
     if (isEditing.value) {
-        const index = students.value.findIndex((student: Student) => student.id !== null && student.id === form.value.id);
-        if (index !== -1) {
-            students.value[index] = {
-                ...form.value
-            }; // Update existing student
-        }
+      await axios.put(`http://localhost:5251/api/students/${studentData.id}`, studentData, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const index = students.value.findIndex((student: Student) => student.id === studentData.id);
+      if (index !== -1) {
+        students.value[index] = { ...studentData };
+      }
     } else {
-        const newId = Math.max(...students.value.map((student: Student) => student.id || 0)) + 1;
-        students.value.push({
-            ...form.value,
-            id: newId
-        });
+      const newId = Math.max(...students.value.map((student: Student) => student.id || 0)) + 1;
+      const newStudent = { ...studentData, id: newId };
+      await axios.post('http://localhost:5251/api/students', newStudent, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      students.value.push(newStudent);
     }
+
     closeModal();
-}
-
-// View attendance record for a student
-function viewAttendance(student: Student) {
-    selectedStudent.value = student;
-    isAttendanceModalOpen.value = true;
-}
-
-// Close attendance modal
-function closeAttendanceModal() {
-    isAttendanceModalOpen.value = false;
+  } catch (error: any) {
+    console.error('Error saving student:', error.response?.data || error.message);
+  }
 }
 </script>
 
 <style scoped>
-table {
-    margin-top: 20px;
+.v-data-table {
+  margin-top: 20px;
 }
 
-button {
-    cursor: pointer;
+.v-btn {
+  cursor: pointer;
 }
 
-button:disabled {
-    cursor: not-allowed;
+.v-btn:disabled {
+  cursor: not-allowed;
 }
 </style>

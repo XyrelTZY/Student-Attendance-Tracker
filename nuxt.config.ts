@@ -4,13 +4,20 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   modules: [
     "@nuxtjs/tailwindcss",
-    (_options, nuxt) => {
-      nuxt.hooks.hook("vite:extendConfig", (config) => {
-        config.plugins = config.plugins || []; // Ensure plugins array exists
-        config.plugins.push(vuetify({ autoImport: true })); // Add Vuetify plugin
+    // Use a function to extend Vite config for Vuetify
+    (_options: any, nuxt: any) => {
+      nuxt.hooks.hook("vite:extendConfig", (config: any) => {
+        config.plugins = config.plugins || []; 
+        config.plugins.push(vuetify({ autoImport: true }));
       });
     },
   ],
+  axios: {
+    proxy: true,
+  },
+  proxy: {
+    '/api': 'http://localhost:5251',
+  },
   tailwindcss: {
     exposeConfig: true,
     viewer: true,

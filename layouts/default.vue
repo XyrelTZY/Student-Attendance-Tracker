@@ -178,7 +178,7 @@ onMounted(() => {
         interval = null;
         console.log("Current Path:", route.path);
 
-    }, 1000);
+    }, 5000);
 
     if (lastPath) {
         router.push(lastPath);
@@ -203,9 +203,9 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss">
-@import '../assets/global.scss';
+@use '../assets/global.scss'as theme;
 
 .sidebar-container {
-    background: $theme5;
+    background: theme.$theme5;
 }
 </style>
